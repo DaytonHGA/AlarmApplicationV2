@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
+
+import java.util.Calendar;
+import java.util.TimeZone;
 
 
 public class Notification extends ContextWrapper {
@@ -38,9 +42,11 @@ public class Notification extends ContextWrapper {
     }
 
     public NotificationCompat.Builder getChannelNotification() {
-        return new NotificationCompat.Builder(getApplicationContext(), channelID)
+     return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Alarm!")
-                .setContentText("Your AlarmManager is working.")
-                .setSmallIcon(R.drawable.ic_android);
+                .setContentText("Alarm functions. Time Zone: "+ Calendar.getInstance().getTimeZone().getDisplayName())
+//                .setStyle(new NotificationCompat.InboxStyle()
+//                        .addLine((CharSequence) TimeZone.getTimeZone("America/Chicago")))
+                .setSmallIcon(R.drawable.ic_launcher_background);
     }
 }

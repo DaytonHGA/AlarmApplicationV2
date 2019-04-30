@@ -1,12 +1,14 @@
 package com.example.groupproj3alarm;
 
 import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -16,22 +18,26 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     private TextView mTextView;
-
+    public Boolean recursion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mTextView = findViewById(R.id.textView);
-
+        TextView tz = findViewById(R.id.timez);
+        tz.setTextSize(12);
+        tz.setText("Current Time Zone: "+Calendar.getInstance().getTimeZone().getDisplayName());
         Button buttonTimePicker = findViewById(R.id.button_timepicker);
         buttonTimePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,14 +52,26 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Opening Alarms", Snackbar.LENGTH_LONG)
-////                        .setAction("Action", null).show();
                 Snackbar.make(view,"Opening Alarms", Snackbar.LENGTH_LONG)
                         .setAction("Action",null).show();
                 YourService ys= new YourService();
                 startActivity(new Intent(getApplicationContext(),Alarms.class));
             }});
 
+        FloatingActionButton fab2 =findViewById(R.id.addLocationAlarm);
+        fab2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Snackbar.make(view,"Adding Location Alarm", Snackbar.LENGTH_LONG)
+                        .setAction("Action",null).show();
+                YourService ys= new YourService();
+                startActivity(new Intent(getApplicationContext(),LocationActivity.class));
+            }
+        });
+        Switch rec= (Switch) findViewById(R.id.recursive);
+        if (rec.isChecked()) {
+            recursion= true;
+        }
         Button buttonCancelAlarm = findViewById(R.id.button_cancel);
         buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         c.set(Calendar.HOUR_OF_DAY, hourOfDay);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, 0);
-
+//        c.setTimeZone(TimeZone.getDefault());
         updateTimeText(c);
         startAlarm(c);
     }
@@ -82,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         mTextView.setText(timeText);
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm(Calendar c) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -91,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
+//        if (recursion){
+//            c.add(Calendar.DATE, 1);
+//        }
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
@@ -102,5 +124,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         alarmManager.cancel(pendingIntent);
         mTextView.setText("Alarm canceled");
+
     }
+
 }

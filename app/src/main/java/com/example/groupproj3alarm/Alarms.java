@@ -9,8 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.Calendar;
 
 public class Alarms extends AppCompatActivity  {
 
@@ -27,10 +33,20 @@ public class Alarms extends AppCompatActivity  {
             public void onClick(View view) {
                 Snackbar.make(view, "Set Time", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-              //  startActivity(new Intent(getApplicationContext(),Alarm.class)); this breaks the app
 
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       TextView alarms= findViewById(R.id.textView5);
+        Calendar c = Calendar.getInstance();
+//        c.get(Calendar.HOUR_OF_DAY);
+//        c.get(Calendar.MINUTE);
+//        c.get(Calendar.SECOND);
+        String s= c.getTime().toString();
+        String x= c.getTimeZone().getDisplayName().toString();
+        Long y= c.getTimeInMillis();
+        alarms.setText(s+" "+ x+ " "+ y);
     }
+
+
 }

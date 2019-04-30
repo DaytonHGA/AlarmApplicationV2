@@ -6,4 +6,7 @@
     <string name="large_text">
         "Alarm 1\nAlarm 2\nAlarm 3\nAlarm 4"
     </string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_notif_test">notifTest</string>
+    <color name="black">#000000</color>
 </resources>

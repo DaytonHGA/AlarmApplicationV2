@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -21,17 +22,17 @@
     </android.support.design.widget.AppBarLayout>
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/location"
         layout="@layout/content_main"
-        app:layout_anchor="@+id/addAlarms"
-        app:layout_anchorGravity="end|center" />
+        app:layout_anchor="@+id/textView"
+        app:layout_anchorGravity="bottom|center" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:layout_anchor="@+id/include"
+        app:layout_anchor="@+id/location"
         app:layout_anchorGravity="top|center"
         app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
 
@@ -44,8 +45,8 @@
         android:layout_marginBottom="30dp"
         android:text="No Alarm set"
         android:textSize="30sp"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="start|bottom" />
+        app:layout_anchor="@+id/location"
+        app:layout_anchorGravity="bottom|center" />
 
     <Button
         android:id="@+id/button_timepicker"
@@ -53,8 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="open time picker"
-        app:layout_anchor="@+id/include"
+        android:text="Set One-time Alarm"
+        app:layout_anchor="@+id/location"
         app:layout_anchorGravity="end|center" />
 
     <Button
@@ -65,6 +66,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="27dp"
         android:text="cancel alarm"
-        app:layout_anchor="@+id/include"
+        app:layout_anchor="@+id/location"
         app:layout_anchorGravity="start|center" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addLocationAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:layout_anchor="@+id/location"
+        app:layout_anchorGravity="end|top"
+        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
 </android.support.design.widget.CoordinatorLayout>
