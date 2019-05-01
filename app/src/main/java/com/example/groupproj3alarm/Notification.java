@@ -45,8 +45,6 @@ public class Notification extends ContextWrapper {
      return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Alarm!")
                 .setContentText("Alarm functions. Time Zone: "+ Calendar.getInstance().getTimeZone().getDisplayName())
-//                .setStyle(new NotificationCompat.InboxStyle()
-//                        .addLine((CharSequence) TimeZone.getTimeZone("America/Chicago")))
                 .setSmallIcon(R.drawable.ic_launcher_background);
     }
 }

@@ -46,7 +46,6 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
     private boolean sensorRegistered = false;
     private AccessibilityService context;
     private boolean locationTrigger = false;
-    private Calendar c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +95,7 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
                     content = "2";
                 }
                 tv.setText("Location check after " + content + " minutes");
+//
             }
 
         });
@@ -104,7 +104,6 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
 
     }
 
-    public TextView mtv = findViewById(R.id.Alarmcan);
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -159,7 +158,13 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
                         Log.d(TAG, "Not moving");//if stop walking, alarm goes off
                         Snackbar.make(getWindow().getDecorView().getRootView(), "Get Up and Move! ", Snackbar.LENGTH_INDEFINITE).show();
                     }
-
+                    try {
+                        while (sensorRegistered) {
+                            Thread.sleep (lockTime);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     hitCount = 0;
                     hitSum = 0;
                     hitResult = 0;
