@@ -41,10 +41,12 @@ public class Notification extends ContextWrapper {
         return mManager;
     }
 
+
+
     public NotificationCompat.Builder getChannelNotification() {
      return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Alarm!")
-                .setContentText("Alarm functions. Time Zone: "+ Calendar.getInstance().getTimeZone().getDisplayName())
+                .setContentText("Alarm functions."+" Time Zone: "+ Calendar.getInstance().getTimeZone().getDisplayName())
                 .setSmallIcon(R.drawable.ic_launcher_background);
     }
 }

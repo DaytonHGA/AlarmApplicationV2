@@ -25,6 +25,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -46,6 +47,7 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
     private boolean sensorRegistered = false;
     private AccessibilityService context;
     public static boolean locationTrigger = false;
+    public static boolean switch4 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,15 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
         accelerometer = sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorMan.registerListener(LocationActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         locationTrigger = false;
+
+
+
+        Switch rec= (Switch) findViewById(R.id.switch4);
+        if (rec.isChecked()) {
+            switch4= true;
+        }else {
+            switch4= false;
+        }
 
 
 
@@ -78,8 +89,10 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
                 intContent = Integer.parseInt(content)*60000;
 
                 Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(intContent);
-                startAlarm(c);
+                startAlarm(c, intContent);
+
+
+
 
 //
 //                locationTrigger = true;
@@ -146,7 +159,6 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
         String timeText = "Alarm set for: ";
         timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
 
-
     }
 
 
@@ -164,6 +176,21 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
 //        }
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startAlarm(Calendar c, int Time) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+//        if (c.before(Calendar.getInstance())) {
+//            c.add(Calendar.DATE, 1);
+//        }
+//        if (recursion){
+//            c.add(Calendar.DATE, 1);
+//        }
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis()+Time, pendingIntent);
     }
 
     private void cancelAlarm() {
@@ -189,14 +216,14 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
     private double hitResult = 0;
 
     private int SAMPLE_SIZE = 10;// change this sample size as you want, higher is more precise but slow measure. (was 50...10... can mess with_)
-    private final double THRESHOLD = 0.2; // change this threshold as you want, higher is more spike movement
+    private final double THRESHOLD = 0.5; // change this threshold as you want, higher is more spike movement
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onSensorChanged(SensorEvent event) {
         // Log.d(TAG,"Change X: "+ event.values[0]+"Y: "+event.values[1]+"Z: "+event.values[2]); //logs x, y, z cord.
-        if (locationTrigger == true) {
+        if (locationTrigger) {
 
 
 //            Log.d(TAG, "onSensorChanged: Waiting"+lockTime+" Milliseconds");
@@ -247,73 +274,4 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
         }
     }
 }
-//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//    @Override
-//    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//        Calendar c = Calendar.getInstance();
-//        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//        c.set(Calendar.MINUTE, minute);
-//        c.set(Calendar.SECOND, 0);
-////        c.setTimeZone(TimeZone.getDefault());
-//        updateTimeText(c);
-//        startAlarm(c);
-//    }
-//
-//    private void updateTimeText(Calendar c) {
-//        String timeText = "Alarm set for: ";
-//        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
-//
-//        mTextView.setText(timeText);
-//    }
-//
-//
-//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//    private void startAlarm(Calendar c) {
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-//
-//        if (c.before(Calendar.getInstance())) {
-//            c.add(Calendar.DATE, 1);
-//        }
-////        if (recursion){
-////            c.add(Calendar.DATE, 1);
-////        }
-//
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//    }
-//
-//    private void cancelAlarm() {
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-//
-//        alarmManager.cancel(pendingIntent);
-//        mTextView.setText("Alarm canceled");
-//
-//    }
-//
-//
-//
-//}
-//
-//    private void updateTimeText(Calendar c) {
-//        String timeText = "Alarm set for: ";
-//        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
-//        mtv.setText(timeText);
-//    }
-//
-//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//    private void startAlarm(Calendar c) {
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-//
-//        if (c.before(Calendar.getInstance())) {
-//            c.add(Calendar.DATE, 1);
-//        }
-//
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//    }
-//
-//}
+

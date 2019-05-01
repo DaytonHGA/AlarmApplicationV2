@@ -65,6 +65,13 @@
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="end|center" />
 
+    <Switch
+        android:id="@+id/switch4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timer Only(No Location)"
+        app:layout_anchor="@+id/textView3"
+        app:layout_anchorGravity="bottom|center" />
 
 
 </android.support.design.widget.CoordinatorLayout>

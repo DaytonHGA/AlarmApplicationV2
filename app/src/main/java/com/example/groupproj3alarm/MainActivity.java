@@ -1,14 +1,12 @@
 package com.example.groupproj3alarm;
 
-import android.app.ActionBar;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -18,17 +16,19 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     private TextView mTextView;
-    public Boolean recursion;
+    public Boolean recursion = false;
+    public TextInputEditText editMsg;
+    public EditText editLoc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,8 +79,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 cancelAlarm();
             }
         });
-    }
+        editMsg= findViewById(R.id.editMsg);
+        editLoc= findViewById(R.id.editMessage);
 
+    }
+    public EditText getEditMsg() {
+//        String content = editMsg.getText().toString();
+        return editMsg;
+    }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -103,6 +109,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm(Calendar c) {
+        Switch rec = (Switch) findViewById(R.id.recursive);
+
+        if(rec.isChecked())
+        {
+            recursion = true;
+        }
+        else
+        {
+            recursion = false;
+        }
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
@@ -110,11 +126,17 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
-//        if (recursion){
-//            c.add(Calendar.DATE, 1);
-//        }
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        if(recursion)
+        {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), 600, pendingIntent);
+        }
+        else
+            {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            }
+
     }
 
     private void cancelAlarm() {

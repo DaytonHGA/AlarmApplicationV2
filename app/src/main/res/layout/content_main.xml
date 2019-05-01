@@ -68,4 +68,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addAlarm" />
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/alarmmsg"
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="109dp"
+        app:layout_constraintBottom_toTopOf="@+id/timez"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recursive">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/editMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter alarm msg" />
+    </android.support.design.widget.TextInputLayout>
+
+    <EditText
+        android:id="@+id/editMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="81dp"
+        android:layout_marginLeft="81dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="117dp"
+        android:layout_marginRight="117dp"
+        android:layout_marginBottom="50dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Current Location"
+        app:layout_constraintBottom_toTopOf="@+id/timez"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarmmsg" />
+
 </android.support.constraint.ConstraintLayout>
