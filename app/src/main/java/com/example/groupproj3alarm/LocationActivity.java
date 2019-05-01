@@ -33,7 +33,7 @@ import java.util.Calendar;
 
 import static java.lang.Thread.*;
 
-public class LocationActivity extends AppCompatActivity implements SensorEventListener{
+public class LocationActivity extends AppCompatActivity implements SensorEventListener, TimePickerDialog.OnTimeSetListener{
     private final String TAG = getClass().getSimpleName();
     private SensorManager sensorMan;
     private Sensor accelerometer;
@@ -45,7 +45,7 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
     private long lockTime = 2000000;
     private boolean sensorRegistered = false;
     private AccessibilityService context;
-    private boolean locationTrigger = false;
+    public static boolean locationTrigger = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,45 +56,58 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
         sensorMan = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorMan.registerListener(LocationActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        locationTrigger = false;
+
 
 
         FloatingActionButton fab = findViewById(R.id.localarm);
         final TextView tv = findViewById(R.id.textView3);
         final EditText timer = findViewById(R.id.timer);
         fab.setOnClickListener(new View.OnClickListener() {
+            int intContent = 120000;
             @Override
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             public void onClick(View view) {
+
+
+
                 Snackbar.make(view, "Adding Location Alarm", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 //read time from time setter and make location true after that time
                 String content = timer.getText().toString();//gets you the contents of edit text
+                intContent = Integer.parseInt(content)*60000;
 
-                locationTrigger = true;
-                lockTime = 120000;//default time before Checking location (2 minutes)
-                boolean flag = false;
-                if (!content.isEmpty()) {
-                    for (int i = 0; i < content.length(); i++) {
-                        char c = content.charAt(i);
-                        if (c == ':') flag = true;
-                    }
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(intContent);
+                startAlarm(c);
 
-                    if (flag) {
-                        String[] parts = content.split(":");
-                        String min = parts[0];
-                        String sec = parts[1];
-                        long min1 = Long.parseLong(min);
-                        min1 *= 60000;
-                        long sec1 = Long.parseLong(sec);
-                        sec1 *= 1000;
-                        lockTime = min1 + sec1;
-                    } else {
-                        long min = Long.parseLong(content);
-                        min *= 60000;
-                    }
-                } else {
-                    content = "2";
-                }
-                tv.setText("Location check after " + content + " minutes");
+//
+//                locationTrigger = true;
+//                lockTime = 120000;//default time before Checking location (2 minutes)
+//                boolean flag = false;
+//                if (!content.isEmpty()) {
+//                    for (int i = 0; i < content.length(); i++) {
+//                        char c = content.charAt(i);
+//                        if (c == ':') flag = true;
+//                    }
+//
+//                    if (flag) {
+//                        String[] parts = content.split(":");
+//                        String min = parts[0];
+//                        String sec = parts[1];
+//                        long min1 = Long.parseLong(min);
+//                        min1 *= 60000;
+//                        long sec1 = Long.parseLong(sec);
+//                        sec1 *= 1000;
+//                        lockTime = min1 + sec1;
+//                    } else {
+//                        long min = Long.parseLong(content);
+//                        min *= 60000;
+//                    }
+//                } else {
+//                    content = "2";
+//                }
+//                tv.setText("Location check after " + content + " minutes");
 //
             }
 
@@ -109,6 +122,67 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+
+
+
+
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+//        c.setTimeZone(TimeZone.getDefault());
+        updateTimeText(c);
+        startAlarm(c);
+    }
+
+    private void updateTimeText(Calendar c) {
+        String timeText = "Alarm set for: ";
+        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startAlarm(Calendar c) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DATE, 1);
+        }
+//        if (recursion){
+//            c.add(Calendar.DATE, 1);
+//        }
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
+    private void cancelAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+
+
+    }
+
+
+
+
+
+
+
+
 
     private int hitCount = 0;
     private double hitSum = 0;
@@ -158,13 +232,13 @@ public class LocationActivity extends AppCompatActivity implements SensorEventLi
                         Log.d(TAG, "Not moving");//if stop walking, alarm goes off
                         Snackbar.make(getWindow().getDecorView().getRootView(), "Get Up and Move! ", Snackbar.LENGTH_INDEFINITE).show();
                     }
-                    try {
-                        while (sensorRegistered) {
-                            Thread.sleep (lockTime);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        while (sensorRegistered) {
+//                            Thread.sleep (lockTime);
+//                        }
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     hitCount = 0;
                     hitSum = 0;
                     hitResult = 0;

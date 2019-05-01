@@ -11,6 +11,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Notification notificationHelper = new Notification(context);
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
+        LocationActivity.locationTrigger = true;
         notificationHelper.getManager().notify(1, nb.build());
     }
 }
