@@ -65,6 +65,15 @@
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="end|center" />
 
+    <TextView
+        android:id="@+id/Alarmcan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00E95353"
+        android:text="TextView"
+        app:autoSizeTextType="20"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="bottom|center" />
 
 
 </android.support.design.widget.CoordinatorLayout>
